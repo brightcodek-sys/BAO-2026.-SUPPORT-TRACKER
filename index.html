@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAO 2026 | Support Tracker</title>
+    <style>
+        :root {
+            --ekiti-green: #006400;
+            --ekiti-light-green: #008000;
+            --gold: #FFD700;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #app {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border-top: 8px solid var(--ekiti-green);
+        }
+
+        h1 { color: var(--ekiti-green); margin-bottom: 5px; }
+        p.subtitle { color: #555; margin-bottom: 30px; font-style: italic; }
+
+        .counter-container {
+            background: #e9f5e9;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        #count-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--ekiti-light-green);
+            margin: 0;
+        }
+
+        .label {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        #vote-btn {
+            background: var(--ekiti-green);
+            color: white;
+            padding: 18px 30px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        #vote-btn:hover {
+            background: var(--ekiti-light-green);
+            transform: scale(1.02);
+        }
+
+        #status-msg {
+            margin-top: 20px;
+            font-weight: bold;
+            color: var(--ekiti-green);
+            min-height: 24px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.7rem;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div style="background: var(--gold); height: 5px; width: 50px; margin: 0 auto 20px;"></div>
+    <h1>BAO 2026</h1>
+    <p class="subtitle">Shared Prosperity for Ekiti State</p>
+
+    <div class="counter-container">
+        <h2 id="count-display">0</h2>
+        <div class="label">Total Support Votes</div>
+    </div>
+
+    <label for="lga-select" style="display:block; text-align:left; margin-bottom: 5px; font-size: 0.9rem; color: #444;">Select your LGA:</label>
+    <select id="lga-select">
+        <option value="Ado">Ado-Ekiti</option>
+        <option value="Ikere">Ikere</option>
+        <option value="Oye">Oye</option>
+        <option value="Ijero">Ijero</option>
+        <option value="Ekiti South-West">Ekiti South-West</option>
+        <option value="Ekiti West">Ekiti West</option>
+        <option value="Ekiti East">Ekiti East</option>
+        <option value="Irepodun/Ifelodun">Irepodun/Ifelodun</option>
+        <option value="Ikole">Ikole</option>
+        <option value="Moba">Moba</option>
+        <option value="Ido/Osi">Ido/Osi</option>
+        <option value="Efon">Efon</option>
+        <option value="Ilejemeje">Ilejemeje</option>
+        <option value="Ilejemeta">Ise/Orun</option>
+        <option value="Emure">Emure</option>
+        <option value="Gbonyin">Gbonyin</option>
+    </select>
+
+    <button id="vote-btn">VOTE FOR PROGRESS</button>
+    
+    <p id="status-msg"></p>
+
+    <div class="footer">
+        Powered by Bright Technologies <br>
+        Fountain of Knowledge Innovation Lab
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, onSnapshot, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // PASTE YOUR FIREBASE CONFIG HERE
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const statsRef = doc(db, "campaign", "stats");
+
+    // Live Update Display
+    onSnapshot(statsRef, (docSnap) => {
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            document.getElementById('count-display').innerText = data.total_votes.toLocaleString();
+        }
+    });
+
+    // Handle Vote
+    document.getElementById('vote-btn').onclick = async () => {
+        if (localStorage.getItem('bao_voted_2026')) {
+            document.getElementById('status-msg').innerText = "Already supported! Forward Ekiti!";
+            return;
+        }
+
+        const lga = document.getElementById('lga-select').value;
+
+        try {
+            // Update total and specific LGA count
+            await updateDoc(statsRef, {
+                total_votes: increment(1),
+                [`lga_totals.${lga}`]: increment(1)
+            });
+            
+            localStorage.setItem('bao_voted_2026', 'true');
+            document.getElementById('status-msg').innerText = "Successfully Recorded for " + lga + "!";
+        } catch (e) {
+            console.error("Error:", e);
+            document.getElementById('status-msg').innerText = "Connection Error. Try again!";
+        }
+    };
+</script>
+
+</body>
+</html>
