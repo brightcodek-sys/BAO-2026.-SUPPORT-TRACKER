@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,106 +21,92 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            color: #333;
         }
 
         .card {
             background: var(--white);
-            padding: 2rem;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
             text-align: center;
-            max-width: 450px;
-            width: 90%;
-            border-top: 10px solid var(--ekiti-green);
+            max-width: 480px;
+            width: 92%;
+            border-top: 12px solid var(--ekiti-green);
         }
 
-        .badge {
-            background: var(--gold);
-            color: var(--ekiti-green);
-            padding: 5px 15px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 1rem;
-        }
-
-        h1 { margin: 0; color: var(--ekiti-green); font-size: 2.2rem; }
-        .subtitle { color: #666; margin-bottom: 2rem; font-size: 0.9rem; }
+        h1 { margin: 0; color: var(--ekiti-green); font-size: 2.5rem; font-weight: 900; }
+        .subtitle { color: #555; margin-bottom: 2rem; font-weight: 500; }
 
         .counter-box {
             background: var(--ekiti-light);
-            padding: 2rem;
-            border-radius: 20px;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(0,100,0,0.1);
+            padding: 2.5rem;
+            border-radius: 25px;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(0,100,0,0.05);
         }
 
         #count-display {
-            font-size: 4.5rem;
-            font-weight: 800;
+            font-size: 5rem;
+            font-weight: 900;
             color: var(--ekiti-green);
             margin: 0;
-            line-height: 1;
+            letter-spacing: -2px;
         }
 
         .label {
             text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.7rem;
+            letter-spacing: 3px;
+            font-size: 0.75rem;
             color: #666;
             margin-top: 10px;
+            font-weight: bold;
         }
 
         select {
             width: 100%;
-            padding: 15px;
+            padding: 18px;
             margin-bottom: 1.5rem;
-            border-radius: 12px;
-            border: 2px solid #eee;
-            font-size: 1rem;
-            outline: none;
-            cursor: pointer;
+            border-radius: 15px;
+            border: 2px solid #ddd;
+            font-size: 1.1rem;
+            appearance: none;
+            background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat right 15px center/20px;
         }
 
         #vote-btn {
             background: var(--ekiti-green);
             color: white;
-            padding: 1.2rem;
-            font-size: 1.2rem;
-            font-weight: bold;
+            padding: 1.3rem;
+            font-size: 1.3rem;
+            font-weight: 800;
             border: none;
-            border-radius: 12px;
+            border-radius: 15px;
             cursor: pointer;
             width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,100,0,0.2);
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        #vote-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-        #vote-btn:hover:not(:disabled) { background: #004d00; transform: translateY(-2px); }
+        #vote-btn:hover:not(:disabled) { background: #004d00; transform: scale(1.03); }
+        #vote-btn:disabled { background: #bbb; }
 
         #status-msg {
             margin-top: 1.5rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            min-height: 1.2rem;
+            font-weight: 700;
+            color: var(--ekiti-green);
         }
 
-        .footer { margin-top: 2rem; font-size: 0.7rem; color: #aaa; }
+        .footer { margin-top: 2.5rem; font-size: 0.75rem; color: #999; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div class="badge">EKITI 2026</div>
-    <h1>BAO AGAIN</h1>
+    <h1>BAO 2026</h1>
     <p class="subtitle">Continuity of Shared Prosperity</p>
 
     <div class="counter-box">
-        <h2 id="count-display">...</h2>
-        <div class="label">Supporters Tracked Live</div>
+        <h2 id="count-display">0</h2>
+        <div class="label">Total Support Votes</div>
     </div>
 
     <select id="lga-select">
@@ -142,89 +128,83 @@
         <option value="Gbonyin">Gbonyin</option>
     </select>
 
-    <button id="vote-btn">RECORD MY SUPPORT</button>
+    <button id="vote-btn">SUPPORT PROGRESS</button>
     <p id="status-msg"></p>
 
     <div class="footer">
-        PROJECT BY BRIGHT TECHNOLOGIES<br>
-        DEVELOPED FOR THE FOUNTAIN OF KNOWLEDGE
+        POWERED BY BRIGHT TECHNOLOGIES<br>
+        FOUNTAIN OF KNOWLEDGE LAB
     </div>
 </div>
 
 <script>
-    // 1. SUPABASE CONFIGURATION
     const SUPABASE_URL = 'https://gpnwvuyorphfuhcbdlbn.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwbnd2dXlvcnBoZnVoY2JkbGJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0MTQ4ODQsImV4cCI6MjA5Mjk5MDg4NH0._omrZAui0kMX2aEXN6KSKv3rcf4OYJYy9iyRaCZHBck';
     
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const countDisplay = document.getElementById('count-display');
-    const voteBtn = document.getElementById('vote-btn');
-    const statusMsg = document.getElementById('status-msg');
-
-    // 2. FETCH TOTAL VOTES (Realtime Aggregation)
-    async function updateGlobalCount() {
+    // 1. Initial Load and Polling Fallback (Every 10 seconds just in case)
+    async function refreshCount() {
         const { data, error } = await _supabase
             .from('campaign_stats')
             .select('vote_count');
         
         if (data) {
-            const total = data.reduce((sum, item) => sum + item.vote_count, 0);
-            countDisplay.innerText = total.toLocaleString();
+            const total = data.reduce((acc, curr) => acc + (curr.vote_count || 0), 0);
+            document.getElementById('count-display').innerText = total.toLocaleString();
         }
     }
 
-    // 3. CAST VOTE FUNCTION
-    voteBtn.onclick = async () => {
-        if (localStorage.getItem('bao_supported_2026')) {
-            statusMsg.style.color = "var(--ekiti-green)";
-            statusMsg.innerText = "You have already joined the movement!";
+    // 2. Realtime Listener (Specific to Ireland/EU-West Region Settings)
+    const channel = _supabase
+        .channel('db-changes')
+        .on('postgres_changes', 
+            { event: 'UPDATE', schema: 'public', table: 'campaign_stats' }, 
+            (payload) => {
+                console.log('Change received!', payload);
+                refreshCount();
+            }
+        )
+        .subscribe();
+
+    // 3. Vote Logic
+    document.getElementById('vote-btn').onclick = async () => {
+        if (localStorage.getItem('bao_2026_done')) {
+            document.getElementById('status-msg').innerText = "Already supported! Forward Ekiti!";
             return;
         }
 
         const lga = document.getElementById('lga-select').value;
-        voteBtn.disabled = true;
-        statusMsg.innerText = "Connecting to Ekiti Gateway...";
+        const btn = document.getElementById('vote-btn');
+        btn.disabled = true;
 
         try {
-            // Get User IP for the SQL function check
-            const ipRes = await fetch('https://api.ipify.org?format=json');
-            const { ip } = await ipRes.json();
+            // Get IP for the SQL function
+            const ipFetch = await fetch('https://api.ipify.org?format=json');
+            const { ip } = await ipFetch.json();
 
-            // Call the SQL Function (RPC)
+            // Run the SQL Function (RPC)
             const { data, error } = await _supabase.rpc('record_bao_vote', { 
                 target_lga: lga,
                 user_ip: ip 
             });
 
-            if (error) throw error;
-
             if (data.success) {
-                localStorage.setItem('bao_supported_2026', 'true');
-                statusMsg.style.color = "var(--ekiti-green)";
-                statusMsg.innerText = "SUCCESS! Support recorded for " + lga;
+                localStorage.setItem('bao_2026_done', 'true');
+                document.getElementById('status-msg').innerText = "Record saved for " + lga + "!";
+                refreshCount();
             } else {
-                statusMsg.style.color = "orange";
-                statusMsg.innerText = data.message;
+                document.getElementById('status-msg').innerText = data.message;
             }
-        } catch (err) {
-            console.error(err);
-            statusMsg.style.color = "red";
-            statusMsg.innerText = "System busy. Please try again later.";
-            voteBtn.disabled = false;
+        } catch (e) {
+            document.getElementById('status-msg').innerText = "Network busy. Try again!";
+            btn.disabled = false;
         }
     };
 
-    // 4. REALTIME SUBSCRIPTION
-    _supabase
-        .channel('any')
-        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'campaign_stats' }, () => {
-            updateGlobalCount();
-        })
-        .subscribe();
-
-    // Initial Load
-    updateGlobalCount();
+    // Run on start
+    refreshCount();
+    setInterval(refreshCount, 10000); 
 </script>
 
 </body>
