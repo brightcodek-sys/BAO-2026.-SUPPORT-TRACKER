@@ -4,191 +4,227 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAO 2026 | Support Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --ekiti-green: #006400;
-            --ekiti-light-green: #008000;
+            --ekiti-light: #e9f5e9;
             --gold: #FFD700;
             --white: #ffffff;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f4f7f4;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            color: #333;
         }
 
-        #app {
+        .card {
             background: var(--white);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             text-align: center;
-            max-width: 500px;
+            max-width: 450px;
             width: 90%;
-            border-top: 8px solid var(--ekiti-green);
+            border-top: 10px solid var(--ekiti-green);
         }
 
-        h1 { color: var(--ekiti-green); margin-bottom: 5px; }
-        p.subtitle { color: #555; margin-bottom: 30px; font-style: italic; }
+        .badge {
+            background: var(--gold);
+            color: var(--ekiti-green);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
 
-        .counter-container {
-            background: #e9f5e9;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
+        h1 { margin: 0; color: var(--ekiti-green); font-size: 2.2rem; }
+        .subtitle { color: #666; margin-bottom: 2rem; font-size: 0.9rem; }
+
+        .counter-box {
+            background: var(--ekiti-light);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0,100,0,0.1);
         }
 
         #count-display {
-            font-size: 4rem;
-            font-weight: bold;
-            color: var(--ekiti-light-green);
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--ekiti-green);
             margin: 0;
+            line-height: 1;
         }
 
         .label {
             text-transform: uppercase;
             letter-spacing: 2px;
+            font-size: 0.7rem;
             color: #666;
-            font-size: 0.8rem;
+            margin-top: 10px;
         }
 
         select {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #eee;
             font-size: 1rem;
+            outline: none;
+            cursor: pointer;
         }
 
         #vote-btn {
             background: var(--ekiti-green);
             color: white;
-            padding: 18px 30px;
-            font-size: 1.3rem;
+            padding: 1.2rem;
+            font-size: 1.2rem;
             font-weight: bold;
             border: none;
-            border-radius: 50px;
+            border-radius: 12px;
             cursor: pointer;
             width: 100%;
-            transition: transform 0.2s, background 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,100,0,0.2);
         }
 
-        #vote-btn:hover {
-            background: var(--ekiti-light-green);
-            transform: scale(1.02);
-        }
+        #vote-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        #vote-btn:hover:not(:disabled) { background: #004d00; transform: translateY(-2px); }
 
         #status-msg {
-            margin-top: 20px;
-            font-weight: bold;
-            color: var(--ekiti-green);
-            min-height: 24px;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            min-height: 1.2rem;
         }
 
-        .footer {
-            margin-top: 30px;
-            font-size: 0.7rem;
-            color: #999;
-        }
+        .footer { margin-top: 2rem; font-size: 0.7rem; color: #aaa; }
     </style>
 </head>
 <body>
 
-<div id="app">
-    <div style="background: var(--gold); height: 5px; width: 50px; margin: 0 auto 20px;"></div>
-    <h1>BAO 2026</h1>
-    <p class="subtitle">Shared Prosperity for Ekiti State</p>
+<div class="card">
+    <div class="badge">EKITI 2026</div>
+    <h1>BAO AGAIN</h1>
+    <p class="subtitle">Continuity of Shared Prosperity</p>
 
-    <div class="counter-container">
-        <h2 id="count-display">0</h2>
-        <div class="label">Total Support Votes</div>
+    <div class="counter-box">
+        <h2 id="count-display">...</h2>
+        <div class="label">Supporters Tracked Live</div>
     </div>
 
-    <label for="lga-select" style="display:block; text-align:left; margin-bottom: 5px; font-size: 0.9rem; color: #444;">Select your LGA:</label>
     <select id="lga-select">
-        <option value="Ado">Ado-Ekiti</option>
+        <option value="Ado-Ekiti">Ado-Ekiti</option>
         <option value="Ikere">Ikere</option>
         <option value="Oye">Oye</option>
         <option value="Ijero">Ijero</option>
-        <option value="Ekiti South-West">Ekiti South-West</option>
-        <option value="Ekiti West">Ekiti West</option>
-        <option value="Ekiti East">Ekiti East</option>
-        <option value="Irepodun/Ifelodun">Irepodun/Ifelodun</option>
         <option value="Ikole">Ikole</option>
         <option value="Moba">Moba</option>
         <option value="Ido/Osi">Ido/Osi</option>
+        <option value="Ekiti West">Ekiti West</option>
+        <option value="Ekiti East">Ekiti East</option>
+        <option value="Ekiti South-West">Ekiti South-West</option>
+        <option value="Irepodun/Ifelodun">Irepodun/Ifelodun</option>
         <option value="Efon">Efon</option>
         <option value="Ilejemeje">Ilejemeje</option>
-        <option value="Ilejemeta">Ise/Orun</option>
+        <option value="Ise/Orun">Ise/Orun</option>
         <option value="Emure">Emure</option>
         <option value="Gbonyin">Gbonyin</option>
     </select>
 
-    <button id="vote-btn">VOTE FOR PROGRESS</button>
-    
+    <button id="vote-btn">RECORD MY SUPPORT</button>
     <p id="status-msg"></p>
 
     <div class="footer">
-        Powered by Bright Technologies <br>
-        Fountain of Knowledge Innovation Lab
+        PROJECT BY BRIGHT TECHNOLOGIES<br>
+        DEVELOPED FOR THE FOUNTAIN OF KNOWLEDGE
     </div>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, onSnapshot, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<script>
+    // 1. SUPABASE CONFIGURATION
+    const SUPABASE_URL = 'https://gpnwvuyorphfuhcbdlbn.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwbnd2dXlvcnBoZnVoY2JkbGJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0MTQ4ODQsImV4cCI6MjA5Mjk5MDg4NH0._omrZAui0kMX2aEXN6KSKv3rcf4OYJYy9iyRaCZHBck';
+    
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // PASTE YOUR FIREBASE CONFIG HERE
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
+    const countDisplay = document.getElementById('count-display');
+    const voteBtn = document.getElementById('vote-btn');
+    const statusMsg = document.getElementById('status-msg');
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const statsRef = doc(db, "campaign", "stats");
-
-    // Live Update Display
-    onSnapshot(statsRef, (docSnap) => {
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            document.getElementById('count-display').innerText = data.total_votes.toLocaleString();
+    // 2. FETCH TOTAL VOTES (Realtime Aggregation)
+    async function updateGlobalCount() {
+        const { data, error } = await _supabase
+            .from('campaign_stats')
+            .select('vote_count');
+        
+        if (data) {
+            const total = data.reduce((sum, item) => sum + item.vote_count, 0);
+            countDisplay.innerText = total.toLocaleString();
         }
-    });
+    }
 
-    // Handle Vote
-    document.getElementById('vote-btn').onclick = async () => {
-        if (localStorage.getItem('bao_voted_2026')) {
-            document.getElementById('status-msg').innerText = "Already supported! Forward Ekiti!";
+    // 3. CAST VOTE FUNCTION
+    voteBtn.onclick = async () => {
+        if (localStorage.getItem('bao_supported_2026')) {
+            statusMsg.style.color = "var(--ekiti-green)";
+            statusMsg.innerText = "You have already joined the movement!";
             return;
         }
 
         const lga = document.getElementById('lga-select').value;
+        voteBtn.disabled = true;
+        statusMsg.innerText = "Connecting to Ekiti Gateway...";
 
         try {
-            // Update total and specific LGA count
-            await updateDoc(statsRef, {
-                total_votes: increment(1),
-                [`lga_totals.${lga}`]: increment(1)
+            // Get User IP for the SQL function check
+            const ipRes = await fetch('https://api.ipify.org?format=json');
+            const { ip } = await ipRes.json();
+
+            // Call the SQL Function (RPC)
+            const { data, error } = await _supabase.rpc('record_bao_vote', { 
+                target_lga: lga,
+                user_ip: ip 
             });
-            
-            localStorage.setItem('bao_voted_2026', 'true');
-            document.getElementById('status-msg').innerText = "Successfully Recorded for " + lga + "!";
-        } catch (e) {
-            console.error("Error:", e);
-            document.getElementById('status-msg').innerText = "Connection Error. Try again!";
+
+            if (error) throw error;
+
+            if (data.success) {
+                localStorage.setItem('bao_supported_2026', 'true');
+                statusMsg.style.color = "var(--ekiti-green)";
+                statusMsg.innerText = "SUCCESS! Support recorded for " + lga;
+            } else {
+                statusMsg.style.color = "orange";
+                statusMsg.innerText = data.message;
+            }
+        } catch (err) {
+            console.error(err);
+            statusMsg.style.color = "red";
+            statusMsg.innerText = "System busy. Please try again later.";
+            voteBtn.disabled = false;
         }
     };
+
+    // 4. REALTIME SUBSCRIPTION
+    _supabase
+        .channel('any')
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'campaign_stats' }, () => {
+            updateGlobalCount();
+        })
+        .subscribe();
+
+    // Initial Load
+    updateGlobalCount();
 </script>
 
 </body>
